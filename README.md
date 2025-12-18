@@ -2,26 +2,24 @@
 
 **MiniGit Manager** is a lightweight, portable GUI tool to manage your GitHub repositories without looking at a command line. Designed for Windows, it offers a dual-pane "FileZilla-style" interface to sync files, manage releases, and clean up repository history.
 
-![Version](https://img.shields.io/badge/version-1.2-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Version](https://img.shields.io/badge/version-1.3-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## ✨ Features
 
 *   **📂 Split-View File Manager**:
     *   **Local (Left)**: Browse your hard drive. Upload files with one click.
     *   **Remote (Right)**: Browse your GitHub repo. Delete files or folders (recursive delete supported!).
-    *   **Sync**: Upload/Download buttons for easy file transfer.
-    *   **⬆ Folder Upload**: Recursively upload entire local folders to GitHub.
-    *   **✅ Multi-Select**: Upload or Delete multiple files/folders at once (Ctrl+Click).
-    *   **📅 Date View**: View remote file modification dates.
+    *   **✅ Multi-Select**: Upload or Delete multiple files and folders at once (Ctrl+Click).
+    *   **📅 Date View**: Modification dates are displayed asynchronously for all remote items.
 *   **📡 Multi-Repository Support**: Switch between projects instantly (just enter `Owner/Repo`).
-*   **➕ Create New Repository**: Click "+ NEW REPO" to create a fresh GitHub repository directly from the app (Public or Private).
-*   **📦 Release Manager**:
-    *   Create new Releases (e.g., `v1.0`).
-    *   Auto-upload assets (`.exe`, `.zip`) during release.
-    *   Manage and delete existing releases.
+*   **➕ Create New Repository**: Create a fresh GitHub repository (Public or Private) directly from the app.
+*   **📦 Robust Release Manager (V1.3)**:
+    *   **Smart Updates**: Detects if a tag already exists and offers to update the release.
+    *   **Zero Conflict**: Automatically replaces existing assets with the same name.
+    *   **🚀 Large Asset Streaming**: Upload huge files (GBs!) without saturating your RAM.
 *   **⚡ Advanced Tools**:
     *   **Reset History (Squash)**: Wipe your git history into a single clean commit while keeping files intact.
-    *   **Secure**: Your token is stored locally in `manager_config.json` and can be cleared instantly.
+    *   **Secure**: Your token is stored locally and can be cleared instantly.
 
 ## 🛠️ Installation
 
@@ -36,17 +34,17 @@
     *   **Repo**: Enter your repository as `Owner/Name` (e.g., `CordaAvlao/DeepThought`).
     *   Click **Connect**.
 2.  **Manage Files**:
-    *   Double-click folders to navigate.
-    *   Select files/folders and click **Upload** or **Delete**.
+    *   Use **Ctrl+Click** to select multiple items.
+    *   Click **Upload** or **Delete**.
 3.  **Manage Releases**:
     *   Go to the "Release Manager" tab.
-    *   Enter a Tag (e.g., `v2.0`), optionally select a file, and click **Publish**.
+    *   Enter a Tag, select an asset, and click **Publish**.
 
-## ☕ Support
+## ☕ Support the Project
 
-If this tool saved you time, you can support my work here:
+Si **MiniGit Manager** vous fait gagner du temps et vous évite les tracas de la console, un petit geste est le meilleur moyen de soutenir son développement ! Chaque café m'aide à coder de nouvelles fonctionnalités et à maintenir l'outil gratuit pour tous. ✨
 
-👉 **[Support via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
+👉 **[Soutenir via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
 
 ---
 
@@ -58,43 +56,22 @@ If this tool saved you time, you can support my work here:
 
 *   **📂 Gestionnaire de Fichiers (Vue Double)** :
     *   **Local (Gauche)** : Naviguez sur votre PC. Envoyez des fichiers en un clic.
-    *   **Distant (Droite)** : Naviguez sur GitHub. Supprimez fichiers ou dossiers (suppression récursive incluse !).
-    *   **Sync** : Boutons simples pour Uploader ou Télécharger.
-    *   **⬆ Upload de Dossiers**: Envoyez récursivement des dossiers entiers vers GitHub.
-    *   **✅ Sélection Multiple**: Uploadez ou Supprimez plusieurs fichiers/dossiers d'un coup (Ctrl+Clic).
-    *   **📅 Dates**: Visualisez les dates de modification des fichiers distants.
+    *   **Distant (Droite)** : Naviguez sur GitHub. Supprimez fichiers ou dossiers.
+    *   **✅ Sélection Multiple** : Envoyez ou supprimez plusieurs fichiers/dossiers d'un coup (Ctrl+Clic).
+    *   **📅 Dates** : Visualisez instantanément les dates de modification des fichiers distants.
 *   **📡 Support Multi-Dépôts** : Changez de projet instantanément (`Propriétaire/NomDuRepo`).
-*   **➕ Créer un Nouveau Dépôt** : Cliquez sur "+ NEW REPO" pour créer un nouveau dépôt GitHub directement depuis l'appli (Public ou Privé).
-*   **📦 Gestionnaire de Releases** :
-    *   Créez des versions (ex: `v1.0`) facilement.
-    *   Ajoutez automatiquement votre logiciel (`.exe`) à la release.
-    *   Supprimez les anciennes versions.
+*   **➕ Créer un Nouveau Dépôt** : Créez un dépôt GitHub directement (Public ou Privé).
+*   **📦 Release Manager Robuste (V1.3)** :
+    *   **Mise à jour Intelligente** : Détecte si un tag existe et propose de mettre à jour la version.
+    *   **Zéro Conflit** : Remplace automatiquement les fichiers du même nom dans une release.
+    *   **🚀 Streaming de Gros Fichiers** : Envoyez des fichiers énormes sans saturer la mémoire vive de votre PC.
 *   **⚡ Outils Avancés** :
     *   **Reset History (Squash)** : Fusionnez tout l'historique en un seul commit propre ("Clean Slate").
     *   **Sécurisé** : Votre token est stocké localement et peut être effacé en un clic.
 
-## 🛠️ Installation
+## ☕ Soutenez le Projet
 
-**Aucune installation !**
-1.  Téléchargez `MiniGitManager.exe`.
-2.  Lancez-le.
-
-## 🚀 Utilisation
-
-1.  **Connexion** :
-    *   **Token** : Créez un "Personal Access Token" sur GitHub (Droits: `repo`).
-    *   **Repo** : Entrez `Propriétaire/Nom` (ex: `CordaAvlao/MonProjet`).
-    *   Cliquez sur **Connect**.
-2.  **Fichiers** :
-    *   Double-cliquez pour entrer dans les dossiers.
-    *   Sélectionnez et cliquez sur **Upload** ou **Delete**.
-3.  **Releases** :
-    *   Onglet "Release Manager".
-    *   Entrez un Tag (`v1.0`), choisissez un fichier, cliquez sur **Publish**.
-
-## ☕ Soutien
-
-Si cet outil vous est utile, vous pouvez me soutenir ici :
+Si **MiniGit Manager** rend votre travail plus fluide et vous simplifie la vie, votre soutien est ce qui permet de faire vivre et évoluer ce projet ! Offrir un petit café est la meilleure façon de m'encourager à continuer. ☕✨
 
 👉 **[Soutenir via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
 
