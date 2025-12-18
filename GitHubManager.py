@@ -787,41 +787,84 @@ class GitHubManager:
 
     def publish_release(self):
         tag = self.entry_tag.get().strip()
-        asset = self.entry_asset.get().strip()
+        asset_path = self.entry_asset.get().strip()
         name = self.entry_rel_name.get().strip() or f"Release {tag}"
         
         if not tag: return
         
         def _pub():
             try:
-                # Create
-                data = {"tag_name": tag, "name": name, "body": "Published via MiniGit Manager"}
-                res = self.api_request(f"https://api.github.com/repos/{self.current_repo}/releases", "POST", data)
+                self.status_var.set(f"Checking release {tag}...")
                 
-                # Upload Asset
-                if asset and os.path.exists(asset):
-                    up_url = res['upload_url'].split('{')[0] + f"?name={os.path.basename(asset)}"
+                # 1. Try to create the release
+                data = {"tag_name": tag, "name": name, "body": "Published via MiniGit Manager"}
+                try:
+                    res = self.api_request(f"https://api.github.com/repos/{self.current_repo}/releases", "POST", data)
+                except urllib.error.HTTPError as e:
+                    if e.code == 422:
+                        # Release already exists?
+                        if messagebox.askyesno("Release Exists", f"Release with tag '{tag}' already exists. Update it?"):
+                            # Find the existing release ID
+                            res = self._get_release_by_tag(tag)
+                            if not res:
+                                self.status_var.set("Error: Could not find existing release.")
+                                return
+                        else:
+                            self.status_var.set("Publication cancelled.")
+                            return
+                    else:
+                        raise e
+                
+                release_id = res['id']
+                upload_url_raw = res['upload_url'].split('{')[0]
+                
+                # 2. Upload Asset
+                if asset_path and os.path.exists(asset_path):
+                    fname = os.path.basename(asset_path)
                     
-                    with open(asset, 'rb') as f: b = f.read()
+                    # Check if asset already exists in this release
+                    assets = res.get('assets', [])
+                    for a in assets:
+                        if a['name'] == fname:
+                            self.status_var.set(f"Removing existing asset {fname}...")
+                            self.api_request(f"https://api.github.com/repos/{self.current_repo}/releases/assets/{a['id']}", "DELETE")
+                            break
                     
-                    req = urllib.request.Request(up_url, data=b, method="POST")
-                    req.add_header("Authorization", f"Bearer {self.token}")
-                    req.add_header("Content-Type", "application/octet-stream")
-                    urllib.request.urlopen(req)
+                    self.status_var.set(f"Uploading asset {fname}...")
+                    
+                    up_url = upload_url_raw + f"?name={fname}"
+                    
+                    # Streaming upload to avoid memory issues with large files
+                    file_size = os.path.getsize(asset_path)
+                    with open(asset_path, 'rb') as f:
+                        req = urllib.request.Request(up_url, data=f, method="POST")
+                        req.add_header("Authorization", f"Bearer {self.token}")
+                        req.add_header("Content-Type", "application/octet-stream")
+                        req.add_header("Content-Length", str(file_size))
+                        
+                        with urllib.request.urlopen(req) as response:
+                            response.read() # Consume response
                 
                 self.root.after(0, self.refresh_releases)
-                self.status_var.set("Release Published!")
+                self.status_var.set("Release Published/Updated!")
                 
             except Exception as e:
                 self.status_var.set(f"Release Error: {e}")
                 
         threading.Thread(target=_pub, daemon=True).start()
 
+    def _get_release_by_tag(self, tag):
+        # Fetch release details by tag
+        try:
+            return self.api_request(f"https://api.github.com/repos/{self.current_repo}/releases/tags/{tag}")
+        except:
+            return None
+
     def open_my_github(self):
         webbrowser.open("https://github.com/CordaAvlao")
 
     def show_about(self):
-        messagebox.showinfo("About", "MiniGitManager V1.2\nMade by CordaAvlao\n17/12/2025")
+        messagebox.showinfo("About", "MiniGitManager V1.3\nMade by CordaAvlao\n18/12/2025")
 
 if __name__ == "__main__":
     app = GitHubManager()
