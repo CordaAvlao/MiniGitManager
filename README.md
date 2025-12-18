@@ -43,9 +43,9 @@
 
 ## ☕ Support the Project
 
-Si **MiniGit Manager** vous fait gagner du temps et vous évite les tracas de la console, un petit geste est le meilleur moyen de soutenir son développement ! Chaque café m'aide à coder de nouvelles fonctionnalités et à maintenir l'outil gratuit pour tous. ✨
+If **MiniGit Manager** saves you time and spares you from console hassles, a small gesture is the best way to support its development! Every coffee helps me code new features and keep the tool free for everyone. ✨
 
-👉 **[Soutenir via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
+👉 **[Support via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
 
 ---
 
@@ -73,7 +73,7 @@ Si **MiniGit Manager** vous fait gagner du temps et vous évite les tracas de la
 
 ## ☕ Soutenez le Projet
 
-Si **MiniGit Manager** rend votre travail plus fluide et vous simplifie la vie, votre soutien est ce qui permet de faire vivre et évoluer ce projet ! Offrir un petit café est la meilleure façon de m'encourager à continuer. ☕✨
+Si **MiniGit Manager** vous fait gagner du temps et vous évite les tracas de la console, un petit geste est le meilleur moyen de soutenir son développement ! Chaque café m'aide à coder de nouvelles fonctionnalités et à maintenir l'outil gratuit pour tous. ✨
 
 👉 **[Soutenir via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
 
