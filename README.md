@@ -2,12 +2,13 @@
 
 **MiniGit Manager** is a lightweight, portable GUI tool to manage your GitHub repositories without looking at a command line. Designed for Windows, it offers a dual-pane "FileZilla-style" interface to sync files, manage releases, and clean up repository history.
 
-![Version](https://img.shields.io/badge/version-1.3-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Version](https://img.shields.io/badge/version-1.4-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## ✨ Features
 
 *   **📂 Split-View File Manager**:
     *   **Local (Left)**: Browse your hard drive. Upload files with one click.
+    *   **⟳ Local Refresh**: Easily refresh your local file list.
     *   **Remote (Right)**: Browse your GitHub repo. Delete files or folders (recursive delete supported!).
     *   **✅ Multi-Select**: Upload or Delete multiple files and folders at once (Ctrl+Click).
     *   **📅 Date View**: Modification dates are displayed asynchronously for all remote items.
@@ -56,6 +57,7 @@ Si **MiniGit Manager** vous fait gagner du temps et vous évite les tracas de la
 
 *   **📂 Gestionnaire de Fichiers (Vue Double)** :
     *   **Local (Gauche)** : Naviguez sur votre PC. Envoyez des fichiers en un clic.
+    *   **⟳ Refresh Local** : Actualisez instantanément votre liste de fichiers locaux.
     *   **Distant (Droite)** : Naviguez sur GitHub. Supprimez fichiers ou dossiers.
     *   **✅ Sélection Multiple** : Envoyez ou supprimez plusieurs fichiers/dossiers d'un coup (Ctrl+Clic).
     *   **📅 Dates** : Visualisez instantanément les dates de modification des fichiers distants.
