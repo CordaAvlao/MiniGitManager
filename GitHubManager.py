@@ -105,6 +105,7 @@ class GitHubManager:
         self.path_entry_local.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=2)
         self.path_entry_local.bind("<Return>", lambda e: self.navigate_local(self.path_entry_local.get()))
         tk.Button(nav_l, text="GO", command=lambda: self.navigate_local(self.path_entry_local.get()), width=4).pack(side=tk.RIGHT)
+        tk.Button(nav_l, text="⟳", command=self.refresh_local, width=3).pack(side=tk.RIGHT, padx=2)
 
         # Tree Local
         self.tree_local = ttk.Treeview(left_frame, columns=("size", "date"), show="tree headings")
@@ -864,7 +865,7 @@ class GitHubManager:
         webbrowser.open("https://github.com/CordaAvlao")
 
     def show_about(self):
-        messagebox.showinfo("About", "MiniGitManager V1.3\nMade by CordaAvlao\n18/12/2025")
+        messagebox.showinfo("About", "MiniGitManager V1.4\nMade by CordaAvlao\n18/12/2025")
 
 if __name__ == "__main__":
     app = GitHubManager()
