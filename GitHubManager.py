@@ -8,10 +8,68 @@ import urllib.error
 import base64
 import datetime
 import webbrowser
+import fnmatch
 
 # Configuration
 CONFIG_FILE = "manager_config.json"
 DEFAULT_REPO = "" # Example: "Owner/RepoName"
+
+class GitIgnoreChecker:
+    def __init__(self, root_path):
+        self.root_path = root_path
+        self.patterns = []
+        self.load_gitignore()
+
+    def load_gitignore(self):
+        ignore_path = os.path.join(self.root_path, ".gitignore")
+        if os.path.exists(ignore_path):
+            try:
+                with open(ignore_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith('#'):
+                            # Basic gitignore to glob conversion
+                            pattern = line
+                            if pattern.endswith('/'):
+                                pattern = pattern[:-1]
+                            self.patterns.append(pattern)
+            except Exception as e:
+                print(f"Error loading .gitignore: {e}")
+
+    def is_ignored(self, rel_path):
+        # rel_path should be relative to self.root_path
+        # Use forward slashes for consistency in matching
+        rel_path = rel_path.replace('\\', '/')
+        if rel_path.startswith('./'):
+            rel_path = rel_path[2:]
+            
+        parts = rel_path.split('/')
+        
+        for pattern in self.patterns:
+            # Check if any part of the path matches or the whole path matches
+            # This is a simplified version of gitignore logic
+            if fnmatch.fnmatch(rel_path, pattern) or \
+               fnmatch.fnmatch(rel_path, f"{pattern}/*") or \
+               any(fnmatch.fnmatch(p, pattern) for p in parts):
+                return True
+        return False
+
+class ProgressFileWrapper:
+    def __init__(self, fileobj, total_size, callback):
+        self.fileobj = fileobj
+        self.total_size = total_size
+        self.callback = callback
+        self.bytes_read = 0
+
+    def read(self, size=-1):
+        chunk = self.fileobj.read(size)
+        if chunk:
+            self.bytes_read += len(chunk)
+            self.callback(self.bytes_read, self.total_size)
+        return chunk
+
+    def __len__(self):
+        return self.total_size
 
 class GitHubManager:
     def __init__(self):
@@ -206,6 +264,17 @@ class GitHubManager:
         tk.Button(f2, text="Browse", command=self.browse_asset).pack(side=tk.LEFT)
         
         tk.Button(grp, text="PUBLISH", bg="#007acc", fg="white", command=self.publish_release).pack(fill=tk.X, padx=50, pady=5)
+        
+        # Progress Tracking UI
+        self.progress_frame = tk.Frame(grp)
+        self.progress_frame.pack(fill=tk.X, padx=10, pady=5)
+        self.progress_frame.pack_forget() # Hide initially
+        
+        self.progress_bar = ttk.Progressbar(self.progress_frame, orient="horizontal", mode="determinate")
+        self.progress_bar.pack(fill=tk.X)
+        
+        self.progress_label = tk.Label(self.progress_frame, text="0.0% | 0.0 KB/s | ETA: --:--", font=("Consolas", 9))
+        self.progress_label.pack()
 
     # --- CORE LOGIC ---
     def load_config(self):
@@ -582,9 +651,18 @@ class GitHubManager:
         
         # Gather all selected paths
         items_to_upload = []
+        gitignore_path = None
+        
         for s in sel:
             path = self.tree_local.item(s)['tags'][1]
-            items_to_upload.append(path)
+            if os.path.basename(path) == ".gitignore":
+                gitignore_path = path
+            else:
+                items_to_upload.append(path)
+                
+        # Prioritize .gitignore
+        if gitignore_path:
+            items_to_upload.insert(0, gitignore_path)
             
         count = len(items_to_upload)
         if count > 1:
@@ -599,18 +677,30 @@ class GitHubManager:
     def _upload_items_thread(self, paths):
         total_files = 0
         total_errors = 0
+        skipped = 0
+        
+        # Initialize GitIgnoreChecker from current local path
+        checker = GitIgnoreChecker(self.current_local_path)
         
         self.status_var.set(f"Starting upload of {len(paths)} items...")
         
         try:
             for path in paths:
+                fname = os.path.basename(path)
+                
+                # Check if ignored (only if it's not the .gitignore itself)
+                if fname != ".gitignore" and checker.is_ignored(fname):
+                    print(f"Skipping ignored item: {fname}")
+                    skipped += 1
+                    continue
+
                 if os.path.isdir(path):
-                    f_count, f_err = self._upload_folder_recursive_sync(path)
+                    f_count, f_err, f_skip = self._upload_folder_recursive_sync(path, checker)
                     total_files += f_count
                     total_errors += f_err
+                    skipped += f_skip
                 else:
                     # Single file
-                    fname = os.path.basename(path)
                     # Use current remote directory
                     remote_full_path = f"{self.current_remote_path}/{fname}" if self.current_remote_path else fname
                     self.status_var.set(f"Uploading {fname}...")
@@ -622,8 +712,8 @@ class GitHubManager:
                         total_errors += 1
             
             self.root.after(0, self.refresh_remote)
-            msg = f"Upload Complete.\nFiles: {total_files}\nErrors: {total_errors}"
-            self.status_var.set(f"Uploaded {total_files} files. Errors: {total_errors}")
+            msg = f"Upload Complete.\nFiles: {total_files}\nErrors: {total_errors}\nIgnored: {skipped}"
+            self.status_var.set(f"Uploaded {total_files} files. Errors: {total_errors}. Ignored: {skipped}")
             # Only show box if reasonable amount or errors
             if total_files > 0 or total_errors > 0:
                  self.root.after(0, lambda: messagebox.showinfo("Done", msg))
@@ -631,19 +721,37 @@ class GitHubManager:
         except Exception as e:
             self.status_var.set(f"Upload Batch Error: {e}")
 
-    def _upload_folder_recursive_sync(self, local_folder):
-        # Sync version of recursive upload, returns (count, errors)
+    def _upload_folder_recursive_sync(self, local_folder, checker):
+        # Sync version of recursive upload, returns (count, errors, skipped)
         base_name = os.path.basename(local_folder)
         remote_base = f"{self.current_remote_path}/{base_name}" if self.current_remote_path else base_name
         
         count = 0
         errors = 0
+        skipped = 0
         
         for root, dirs, files in os.walk(local_folder):
+            # rel_dir is relative to the folder where .gitignore is (self.current_local_path)
+            rel_root = os.path.relpath(root, self.current_local_path)
+            
+            # Filter directories in-place for os.walk
+            dirs[:] = [d for d in dirs if not checker.is_ignored(os.path.join(rel_root, d))]
+            # We don't count skipped dirs here because they are not files, 
+            # but their contents will be skipped.
+
             for file in files:
                 local_path = os.path.join(root, file)
-                rel_path = os.path.relpath(local_path, local_folder)
-                remote_path = f"{remote_base}/{rel_path}".replace("\\", "/")
+                rel_path = os.path.relpath(local_path, self.current_local_path)
+                
+                if checker.is_ignored(rel_path):
+                    print(f"Skipping ignored file: {rel_path}")
+                    skipped += 1
+                    continue
+
+                # Remote path relative to current_remote_path
+                # We need rel path from local_folder to preserve subfolder structure
+                rel_from_folder = os.path.relpath(local_path, local_folder)
+                remote_path = f"{remote_base}/{rel_from_folder}".replace("\\", "/")
                 
                 self.status_var.set(f"Uploading {file}...")
                 try:
@@ -652,7 +760,7 @@ class GitHubManager:
                 except Exception as ex:
                     print(ex)
                     errors += 1
-        return count, errors
+        return count, errors, skipped
 
     def _upload_file(self, local_path, remote_path):
         # Helper to upload one file (no threading spawn here, logic only)
@@ -835,21 +943,44 @@ class GitHubManager:
                     
                     up_url = upload_url_raw + f"?name={fname}"
                     
-                    # Streaming upload to avoid memory issues with large files
+                    # Streaming upload with Progress Tracking
                     file_size = os.path.getsize(asset_path)
+                    start_time = datetime.datetime.now()
+                    
+                    self.root.after(0, lambda: self.progress_frame.pack(fill=tk.X, padx=10, pady=5))
+                    
+                    def progress_cb(bytes_read, total):
+                        elapsed = (datetime.datetime.now() - start_time).total_seconds()
+                        percent = (bytes_read / total) * 100
+                        speed = bytes_read / elapsed if elapsed > 0 else 0
+                        eta = (total - bytes_read) / speed if speed > 0 else 0
+                        
+                        speed_mb = speed / (1024 * 1024)
+                        eta_str = str(datetime.timedelta(seconds=int(eta)))
+                        status_text = f"{percent:.1f}% | {speed_mb:.2f} MB/s | ETA: {eta_str}"
+                        
+                        self.root.after(0, lambda: [
+                            self.progress_bar.configure(value=percent),
+                            self.progress_label.configure(text=status_text)
+                        ])
+
                     with open(asset_path, 'rb') as f:
-                        req = urllib.request.Request(up_url, data=f, method="POST")
+                        wrapped_file = ProgressFileWrapper(f, file_size, progress_cb)
+                        req = urllib.request.Request(up_url, data=wrapped_file, method="POST")
                         req.add_header("Authorization", f"Bearer {self.token}")
                         req.add_header("Content-Type", "application/octet-stream")
                         req.add_header("Content-Length", str(file_size))
                         
                         with urllib.request.urlopen(req) as response:
-                            response.read() # Consume response
+                            response.read()
+                    
+                    self.root.after(0, self.progress_frame.pack_forget)
                 
                 self.root.after(0, self.refresh_releases)
                 self.status_var.set("Release Published/Updated!")
                 
             except Exception as e:
+                self.root.after(0, self.progress_frame.pack_forget)
                 self.status_var.set(f"Release Error: {e}")
                 
         threading.Thread(target=_pub, daemon=True).start()
@@ -865,7 +996,7 @@ class GitHubManager:
         webbrowser.open("https://github.com/CordaAvlao")
 
     def show_about(self):
-        messagebox.showinfo("About", "MiniGitManager V1.4\nMade by CordaAvlao\n18/12/2025")
+        messagebox.showinfo("About", "MiniGitManager V1.6\nMade by CordaAvlao\n23/12/2025")
 
 if __name__ == "__main__":
     app = GitHubManager()
