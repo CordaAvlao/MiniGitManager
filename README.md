@@ -1,81 +1,52 @@
-# MiniGit Manager 🚀
+# Pinterest Board Downloader (Standalone & Universal)
 
-**MiniGit Manager** is a lightweight, portable GUI tool to manage your GitHub repositories without looking at a command line. Designed for Windows, it offers a dual-pane "FileZilla-style" interface to sync files, manage releases, and clean up repository history.
-
-![Version](https://img.shields.io/badge/version-1.4-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
-
-## ✨ Features
-
-*   **📂 Split-View File Manager**:
-    *   **Local (Left)**: Browse your hard drive. Upload files with one click.
-    *   **⟳ Local Refresh**: Easily refresh your local file list.
-    *   **Remote (Right)**: Browse your GitHub repo. Delete files or folders (recursive delete supported!).
-    *   **✅ Multi-Select**: Upload or Delete multiple files and folders at once (Ctrl+Click).
-    *   **📅 Date View**: Modification dates are displayed asynchronously for all remote items.
-*   **📡 Multi-Repository Support**: Switch between projects instantly (just enter `Owner/Repo`).
-*   **➕ Create New Repository**: Create a fresh GitHub repository (Public or Private) directly from the app.
-*   **📦 Robust Release Manager (V1.3)**:
-    *   **Smart Updates**: Detects if a tag already exists and offers to update the release.
-    *   **Zero Conflict**: Automatically replaces existing assets with the same name.
-    *   **🚀 Large Asset Streaming**: Upload huge files (GBs!) without saturating your RAM.
-*   **⚡ Advanced Tools**:
-    *   **Reset History (Squash)**: Wipe your git history into a single clean commit while keeping files intact.
-    *   **Secure**: Your token is stored locally and can be cleared instantly.
-
-## 🛠️ Installation
-
-**No installation required!**
-1.  Download `MiniGitManager.exe`.
-2.  Run it.
-
-## 🚀 How to Use
-
-1.  **Connect**:
-    *   **Token**: Generate a "Personal Access Token (Classic)" on GitHub (Scopes: `repo`).
-    *   **Repo**: Enter your repository as `Owner/Name` (e.g., `CordaAvlao/DeepThought`).
-    *   Click **Connect**.
-2.  **Manage Files**:
-    *   Use **Ctrl+Click** to select multiple items.
-    *   Click **Upload** or **Delete**.
-3.  **Manage Releases**:
-    *   Go to the "Release Manager" tab.
-    *   Enter a Tag, select an asset, and click **Publish**.
-
-## ☕ Support the Project
-
-If **MiniGit Manager** saves you time and spares you from console hassles, a small gesture is the best way to support its development! Every coffee helps me code new features and keep the tool free for everyone. ✨
-
-👉 **[Support via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
+A professional tool to back up your Pinterest boards with perfect organization and maximum quality.
 
 ---
 
-# MiniGit Manager (Français) 🇫🇷
+## 🇺🇸 English Version
 
-**MiniGit Manager** est un outil graphique léger et portable pour gérer vos dépôts GitHub sans jamais toucher à la ligne de commande. Avec son interface type "FileZilla", il facilite la synchronisation de fichiers, la gestion des releases et le nettoyage de l'historique.
+### 🚀 Key Features
+- **Multi-Browser Support**: Syncs your cookies from **Firefox, Chrome, Edge, Brave, etc.** for a seamless connection.
+- **Maximum Quality**: Fetches images in their original resolution (no thumbnails).
+- **Board-by-Board Organization**: Automatically creates folders named after your Pinterest boards.
+- **Full Video Support**: Downloads `.mp4` files with automatic audio/video merging.
+- **Smart Anti-Duplicate**: Uses an `archive.txt` file to only download new pins in subsequent runs.
+- **GUI Folder Picker**: Interactive window to choose your save location without touching the code.
+- **Anti-Ban Protection**: Random "human-like" sleep intervals (3-7s) between downloads.
 
-## ✨ Fonctionnalités
-
-*   **📂 Gestionnaire de Fichiers (Vue Double)** :
-    *   **Local (Gauche)** : Naviguez sur votre PC. Envoyez des fichiers en un clic.
-    *   **⟳ Refresh Local** : Actualisez instantanément votre liste de fichiers locaux.
-    *   **Distant (Droite)** : Naviguez sur GitHub. Supprimez fichiers ou dossiers.
-    *   **✅ Sélection Multiple** : Envoyez ou supprimez plusieurs fichiers/dossiers d'un coup (Ctrl+Clic).
-    *   **📅 Dates** : Visualisez instantanément les dates de modification des fichiers distants.
-*   **📡 Support Multi-Dépôts** : Changez de projet instantanément (`Propriétaire/NomDuRepo`).
-*   **➕ Créer un Nouveau Dépôt** : Créez un dépôt GitHub directement (Public ou Privé).
-*   **📦 Release Manager Robuste (V1.3)** :
-    *   **Mise à jour Intelligente** : Détecte si un tag existe et propose de mettre à jour la version.
-    *   **Zéro Conflit** : Remplace automatiquement les fichiers du même nom dans une release.
-    *   **🚀 Streaming de Gros Fichiers** : Envoyez des fichiers énormes sans saturer la mémoire vive de votre PC.
-*   **⚡ Outils Avancés** :
-    *   **Reset History (Squash)** : Fusionnez tout l'historique en un seul commit propre ("Clean Slate").
-    *   **Sécurisé** : Votre token est stocké localement et peut être effacé en un clic.
-
-## ☕ Soutenez le Projet
-
-Si **MiniGit Manager** vous fait gagner du temps et vous évite les tracas de la console, un petit geste est le meilleur moyen de soutenir son développement ! Chaque café m'aide à coder de nouvelles fonctionnalités et à maintenir l'outil gratuit pour tous. ✨
-
-👉 **[Soutenir via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
+### 📥 Usage
+1. **Login**: Ensure you are logged into Pinterest on your usual browser.
+2. **Close Browser**: Close your browser for a moment before starting the scan (to release cookie files).
+3. **Run**: Launch the `.exe` or script, enter your username, and select your browser.
 
 ---
-*Made with ❤️ by CordaAvlao - 2025*
+
+## 🇫🇷 Version Française
+
+### 🚀 Fonctionnalités Clés
+- **Multi-Navigateur** : Synchronise vos cookies depuis **Firefox, Chrome, Edge, Brave, etc.** pour une connexion transparente.
+- **Qualité Maximale** : Récupère les images dans leur résolution d'origine (pas de miniatures).
+- **Rangement par Tableau** : Crée automatiquement des dossiers nommés selon vos tableaux Pinterest.
+- **Support Vidéo complet** : Télécharge les fichiers `.mp4` avec fusion audio/vidéo automatique.
+- **Mode Anti-Doublon** : Un fichier `archive.txt` suit vos téléchargements pour ne prendre que les nouveautés.
+- **Sélecteur de Dossier (GUI)** : Fenêtre interactive pour choisir l'emplacement de sauvegarde.
+- **Anti-Ban** : Délais aléatoires (3-7s) imitant un comportement humain.
+
+### 📖 Utilisation
+1. **Connexion** : Assurez-vous d'être connecté à Pinterest sur votre navigateur habituel.
+2. **Fermeture** : Fermez votre navigateur un court instant avant de lancer le scan (pour libérer les cookies).
+3. **Lancement** : Lancez le `.exe` ou le script, indiquez votre pseudo et choisissez votre navigateur.
+
+---
+
+## ☕ Support the Project / Soutenir le projet
+
+If this tool has saved you hours of manual work and you'd like to support its development, feel free to buy me a coffee! Any support is greatly appreciated.
+
+Si cet outil vous a fait gagner des heures de travail manuel et que vous souhaitez soutenir son développement, n'hésitez pas à m'offrir un café ! Chaque geste est grandement apprécié.
+
+👉 **[Donate via PayPal / Faire un don via PayPal](https://www.paypal.com/ncp/payment/NPGMPUL9N9TFQ)**
+
+---
+*Created with ❤️ by CordaAvlao - 2025*
