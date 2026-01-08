@@ -2,7 +2,7 @@
 
 **MiniGit Manager** is a lightweight, portable GUI tool to manage your GitHub repositories without looking at a command line. Designed for Windows, it offers a dual-pane "FileZilla-style" interface to sync files, manage releases, and clean up repository history.
 
-![Version](https://img.shields.io/badge/version-1.6-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Version](https://img.shields.io/badge/version-1.7-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## ✨ Features
 
@@ -16,11 +16,12 @@
 *   **📡 Multi-Repository Support**: Switch between projects instantly (just enter `Owner/Repo`).
 *   **➕ Create New Repository**: Create a fresh GitHub repository (Public or Private) directly from the app.
 *   **📦 Robust Release Manager (V1.3)**:
+    *   **✨ Topics Management (V1.7)**: Edit repository keywords for better SEO directly from the app.
     *   **Smart Updates**: Detects if a tag already exists and offers to update the release.
-    *   **Zero Conflict**: Automatically replaces existing assets with the same name.
     *   **🚀 Smart Assets (V1.6)**: Real-time upload progress (Percentage, Speed, ETA) for release assets.
     *   **Large Asset Streaming**: Upload huge files (GBs!) without saturating your RAM.
 *   **⚡ Advanced Tools**:
+    *   **✨ Repo Info Tab**: View stars, forks, and repository description at a glance.
     *   **Reset History (Squash)**: Wipe your git history into a single clean commit while keeping files intact.
     *   **Secure**: Your token is stored locally and can be cleared instantly.
 
@@ -67,11 +68,13 @@ If **MiniGit Manager** saves you time and spares you from console hassles, a sma
 *   **📡 Support Multi-Dépôts** : Changez de projet instantanément (`Propriétaire/NomDuRepo`).
 *   **➕ Créer un Nouveau Dépôt** : Créez un dépôt GitHub directement (Public ou Privé).
 *   **📦 Release Manager Robuste (V1.3)** :
+    *   **✨ Gestion des Topics (V1.7)** : Modifiez les mots-clés de votre dépôt pour un meilleur référencement (SEO).
     *   **Mise à jour Intelligente** : Détecte si un tag existe et propose de mettre à jour la version.
     *   **Zéro Conflit** : Remplace automatiquement les fichiers du même nom dans une release.
     *   **🚀 Suivi Temps Réel (V1.6)** : Indicateur de progression (%), vitesse (Mo/s) et temps restant (ETA) lors de l'upload des assets.
     *   **🚀 Streaming de Gros Fichiers** : Envoyez des fichiers énormes sans saturer la mémoire vive de votre PC.
 *   **⚡ Outils Avancés** :
+    *   **✨ Onglet Repo Info** : Consultez le nombre d'étoiles, de forks et la description du dépôt en un clin d'œil.
     *   **Reset History (Squash)** : Fusionnez tout l'historique en un seul commit propre ("Clean Slate").
     *   **Sécurisé** : Votre token est stocké localement et peut être effacé en un clic.
 
