@@ -112,6 +112,10 @@ class GitHubManager:
         self.notebook.add(self.tab_releases, text=" 🚀 Release Manager ")
         self.create_release_manager_ui()
         
+        self.tab_repo_info = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_repo_info, text=" ✨ Repo Info ")
+        self.create_repo_info_ui()
+        
         self.status_var = tk.StringVar(value="Ready.")
         tk.Label(self.root, textvariable=self.status_var, bd=1, relief=tk.SUNKEN, anchor=tk.W).pack(side=tk.BOTTOM, fill=tk.X)
 
@@ -276,6 +280,31 @@ class GitHubManager:
         self.progress_label = tk.Label(self.progress_frame, text="0.0% | 0.0 KB/s | ETA: --:--", font=("Consolas", 9))
         self.progress_label.pack()
 
+    def create_repo_info_ui(self):
+        container = tk.Frame(self.tab_repo_info, padx=20, pady=20)
+        container.pack(fill=tk.BOTH, expand=True)
+        
+        tk.Label(container, text="Repository Topics (Keywords for SEO)", font=("Segoe UI", 11, "bold")).pack(anchor=tk.W)
+        tk.Label(container, text="Help users find your project by adding labels like 'python', 'git', 'gui'...", fg="#666").pack(anchor=tk.W, pady=(0, 10))
+        
+        self.topics_entry = tk.Entry(container, font=("Segoe UI", 10), width=60)
+        self.topics_entry.pack(fill=tk.X, pady=5)
+        
+        tk.Label(container, text="Separate topics with commas (e.g., python, automation, tool)", font=("Segoe UI", 8), fg="#888").pack(anchor=tk.W)
+        
+        tk.Button(container, text="UPDATE TOPICS", bg="#28a745", fg="white", font=("Segoe UI", 10, "bold"), 
+                  command=self.update_topics, pady=5).pack(pady=20, fill=tk.X)
+        
+        # Additional Info display
+        info_grp = ttk.LabelFrame(container, text=" General Information ")
+        info_grp.pack(fill=tk.X, pady=10)
+        
+        self.lbl_repo_desc = tk.Label(info_grp, text="Description: ...", wraplength=500, justify=tk.LEFT)
+        self.lbl_repo_desc.pack(anchor=tk.W, padx=10, pady=5)
+        
+        self.lbl_repo_stats = tk.Label(info_grp, text="Stars: 0 | Forks: 0 | Issues: 0", font=("Segoe UI", 9, "italic"))
+        self.lbl_repo_stats.pack(anchor=tk.W, padx=10, pady=5)
+
     # --- CORE LOGIC ---
     def load_config(self):
         if os.path.exists(CONFIG_FILE):
@@ -385,6 +414,7 @@ class GitHubManager:
             self.root.after(0, self.refresh_local)
             self.root.after(0, self.refresh_remote)
             self.root.after(0, self.refresh_releases)
+            self.root.after(0, self.fetch_repo_data)
             
         except Exception as e:
             self.root.after(0, lambda: messagebox.showerror("Conn Error", str(e)))
@@ -393,7 +423,8 @@ class GitHubManager:
     def api_request(self, url, method="GET", data=None):
         req = urllib.request.Request(url, method=method)
         req.add_header("Authorization", f"Bearer {self.token}")
-        req.add_header("Accept", "application/vnd.github.v3+json")
+        # Add Mercury preview for Topics API if needed, standard V3 for others
+        req.add_header("Accept", "application/vnd.github.mercury-preview+json, application/vnd.github.v3+json")
         req.add_header("Content-Type", "application/json")
         
         body = json.dumps(data).encode() if data else None
@@ -992,11 +1023,60 @@ class GitHubManager:
         except:
             return None
 
+    def fetch_repo_data(self):
+        if not self.token or not self.current_repo: return
+        
+        def _fetch():
+            try:
+                # 1. Get Repo Details (Description, etc)
+                repo = self.api_request(f"https://api.github.com/repos/{self.current_repo}")
+                desc = repo.get("description") or "No description."
+                stats = f"Stars: {repo.get('stargazers_count', 0)} | Forks: {repo.get('forks_count', 0)} | Issues: {repo.get('open_issues_count', 0)}"
+                
+                # 2. Get Topics
+                # Note: Mercury preview is enabled in api_request headers
+                topics_res = self.api_request(f"https://api.github.com/repos/{self.current_repo}/topics")
+                names = topics_res.get("names", [])
+                topics_str = ", ".join(names)
+                
+                self.root.after(0, lambda: [
+                    self.topics_entry.delete(0, tk.END),
+                    self.topics_entry.insert(0, topics_str),
+                    self.lbl_repo_desc.config(text=f"Description: {desc}"),
+                    self.lbl_repo_stats.config(text=stats)
+                ])
+                
+            except Exception as e:
+                print(f"Fetch Repo Data Error: {e}")
+                
+        threading.Thread(target=_fetch, daemon=True).start()
+
+    def update_topics(self):
+        if not self.token or not self.current_repo: return
+        
+        raw = self.topics_entry.get().strip()
+        names = [t.strip().lower() for t in raw.split(",") if t.strip()]
+        
+        def _update():
+            self.status_var.set("Updating topics...")
+            try:
+                data = {"names": names}
+                # PUT /repos/{owner}/{repo}/topics
+                self.api_request(f"https://api.github.com/repos/{self.current_repo}/topics", "PUT", data)
+                
+                self.status_var.set("Topics updated successfully!")
+                messagebox.showinfo("Success", "Repository topics have been updated.")
+            except Exception as e:
+                self.status_var.set(f"Update Topics Error: {e}")
+                messagebox.showerror("Error", f"Failed to update topics: {e}")
+                
+        threading.Thread(target=_update, daemon=True).start()
+
     def open_my_github(self):
         webbrowser.open("https://github.com/CordaAvlao")
 
     def show_about(self):
-        messagebox.showinfo("About", "MiniGitManager V1.6\nMade by CordaAvlao\n23/12/2025")
+        messagebox.showinfo("About", "MiniGitManager V1.7\nMade by CordaAvlao\n08/01/2026")
 
 if __name__ == "__main__":
     app = GitHubManager()
